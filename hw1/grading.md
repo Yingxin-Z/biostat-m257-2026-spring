@@ -1,8 +1,9 @@
 # HW1 Grading
 
 **Student:** Yingxin Zhang
-**Total: 131 / 136**
+**Total: 141 / 146**
 
+## The Quality of report 10/10
 ## Usage of Git: 10/10
 
 - Are there enough commits? Are commit messages clear? Yes.
