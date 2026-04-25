@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Yingxin Zhang 006140202">
-<meta name="dcterms.date" content="2026-04-23">
+<meta name="dcterms.date" content="2026-04-25">
 
 <title>Biostat/Biomath M257 Homework 2</title>
 <style>
@@ -2413,7 +2413,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 23, 2026</p>
+      <p class="date">April 25, 2026</p>
     </div>
   </div>
   
@@ -2522,15 +2522,15 @@ w_{kj}^{(t+1)} = w_{kj}^{(t)} \frac{\sum_i x_{ij} v_{ik}^{(t+1)}}{\sum_i b_{ij}^
 <span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    VtX  <span class="op">=</span> <span class="fu">similar</span>(X, r, <span class="fu">size</span>(X, <span class="fl">2</span>))          <span class="co"># V&#39;X</span></span>
 <span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    VtVW <span class="op">=</span> <span class="fu">similar</span>(X, r, <span class="fu">size</span>(X, <span class="fl">2</span>))          <span class="co"># (V&#39;V)W</span></span>
 <span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># epsT = eps(T)</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>    epsT <span class="op">=</span> <span class="fu">eps</span>(T)</span>
 <span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># obj at start point</span></span>
 <span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    normXsq <span class="op">=</span> <span class="fu">dot</span>(X, X)</span>
 <span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mul!</span>(temp, <span class="fu">transpose</span>(V), V)       <span class="co"># V&#39;V</span></span>
 <span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mul!</span>(VtVW, temp, W)               <span class="co"># (V&#39;V)W</span></span>
 <span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mul!</span>(VtX, <span class="fu">transpose</span>(V), X)        <span class="co"># V&#39;X</span></span>
-<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># obj = max(normXsq - 2 * dot(W, VtX) + dot(VtVW, W), zero(T))</span></span>
-<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    obj <span class="op">=</span> normXsq <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu">dot</span>(W, VtX) <span class="op">+</span> <span class="fu">dot</span>(VtVW, W)</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>    obj <span class="op">=</span> <span class="fu">max</span>(normXsq <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu">dot</span>(W, VtX) <span class="op">+</span> <span class="fu">dot</span>(VtVW, W), <span class="fu">zero</span>(T))</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># obj = normXsq - 2 * dot(W, VtX) + dot(VtVW, W)</span></span>
 <span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    niter <span class="op">=</span> maxiter</span>
 <span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
@@ -2539,21 +2539,21 @@ w_{kj}^{(t+1)} = w_{kj}^{(t)} \frac{\sum_i x_{ij} v_{ik}^{(t+1)}}{\sum_i b_{ij}^
 <span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(XWt, X, <span class="fu">transpose</span>(W))        <span class="co"># XW&#39;</span></span>
 <span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(temp, W, <span class="fu">transpose</span>(W))       <span class="co"># WW&#39;</span></span>
 <span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VWWt, V, temp)               <span class="co"># V(WW&#39;)</span></span>
-<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. V *= XWt / max(VWWt, epsT)</span></span>
-<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        @. V <span class="op">*=</span> XWt <span class="op">/</span> VWWt</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>        @. V <span class="op">*=</span> XWt <span class="op">/</span> <span class="fu">max</span>(VWWt, epsT)</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. V *= XWt / VWWt</span></span>
 <span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update W</span></span>
 <span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VtX, <span class="fu">transpose</span>(V), X)        <span class="co"># V&#39;X</span></span>
 <span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(temp, <span class="fu">transpose</span>(V), V)       <span class="co"># V&#39;V</span></span>
 <span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VtVW, temp, W)               <span class="co"># (V&#39;V)W</span></span>
-<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. W *= VtX / max(VtVW, epsT)</span></span>
-<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        @. W <span class="op">*=</span> VtX <span class="op">/</span> VtVW</span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>        @. W <span class="op">*=</span> VtX <span class="op">/</span> <span class="fu">max</span>(VtVW, epsT)</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. W *= VtX / VtVW</span></span>
 <span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update obj</span></span>
 <span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VtVW, temp, W)</span>
 <span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>        obj_old <span class="op">=</span> obj</span>
-<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># obj = max(normXsq - 2 * dot(W, VtX) + dot(VtVW, W), zero(T))</span></span>
-<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        obj <span class="op">=</span> normXsq <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu">dot</span>(W, VtX) <span class="op">+</span> <span class="fu">dot</span>(VtVW, W)</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>        obj <span class="op">=</span> <span class="fu">max</span>(normXsq <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu">dot</span>(W, VtX) <span class="op">+</span> <span class="fu">dot</span>(VtVW, W), <span class="fu">zero</span>(T))</span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># obj = normXsq - 2 * dot(W, VtX) + dot(VtVW, W)</span></span>
 <span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="fu">abs</span>(obj <span class="op">-</span> obj_old) <span class="op">&lt;=</span> tolfun <span class="op">*</span> (<span class="fu">abs</span>(obj_old) <span class="op">+</span> <span class="fl">1</span>)</span>
 <span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>            niter <span class="op">=</span> iter</span>
@@ -2640,25 +2640,28 @@ obj=4430.362097310834, niter=698</code></pre>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    _, _, obj, niter <span class="op">=</span> <span class="fu">nnmf</span>(X, r, V <span class="op">=</span> <span class="fu">copy</span>(V0), W <span class="op">=</span> <span class="fu">copy</span>(W0))</span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@btime</span> <span class="fu">nnmf</span>(<span class="op">$</span>X, <span class="op">$</span>r, V <span class="op">=</span> <span class="fu">copy</span>(<span class="op">$</span>V0), W <span class="op">=</span> <span class="fu">copy</span>(<span class="op">$</span>W0))</span>
-<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">&quot;obj=</span><span class="sc">$</span>obj<span class="st">, niter=</span><span class="sc">$</span>niter<span class="st">&quot;</span>)</span>
-<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@btime</span> <span class="fu">nnmf</span>(<span class="op">$</span>X, <span class="op">$</span>r, V <span class="op">=</span> <span class="op">$</span>V0, W <span class="op">=</span> <span class="op">$</span>W0) setup<span class="op">=</span>(</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">copyto!</span>(<span class="op">$</span>V0, <span class="op">$</span>V0full[<span class="op">:</span>, <span class="fl">1</span><span class="op">:$</span>r]), </span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">copyto!</span>(<span class="op">$</span>W0, <span class="op">$</span>W0full[<span class="fl">1</span><span class="op">:$</span>r, <span class="op">:</span>])</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>   )</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">&quot;obj=</span><span class="sc">$</span>obj<span class="st">, niter=</span><span class="sc">$</span>niter<span class="st">&quot;</span>)</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>r=10
-  85.617 ms (20 allocations: 662.89 KiB)
+  88.690 ms (14 allocations: 442.23 KiB)
 obj=11730.388009854956, niter=239
 r=20
-  238.374 ms (21 allocations: 1.32 MiB)
+  245.367 ms (15 allocations: 899.89 KiB)
 obj=8497.222317850319, niter=394
 r=30
-  413.447 ms (21 allocations: 1.98 MiB)
+  436.164 ms (15 allocations: 1.32 MiB)
 obj=6621.627345486297, niter=482
 r=40
-  593.040 ms (21 allocations: 2.64 MiB)
+  832.130 ms (15 allocations: 1.76 MiB)
 obj=5256.663870563527, niter=581
 r=50
-  961.228 ms (21 allocations: 3.30 MiB)
+  1.286 s (15 allocations: 2.21 MiB)
 obj=4430.201581697285, niter=698</code></pre>
 </div>
 </div>
@@ -2736,7 +2739,7 @@ Are the solutions the same? false</code></pre>
 <section id="q1.7-gpu-optional" class="level3" data-number="1.7">
 <h3 data-number="1.7" class="anchored" data-anchor-id="q1.7-gpu-optional"><span class="header-section-number">1.7</span> Q1.7 GPU (optional)</h3>
 <p>Investigate the GPU capabilities of your computer. Report the speed gain of your GPU code over CPU code at ranks <span class="math inline">\(r=10, 20, 30, 40, 50\)</span>. Make sure to use the same starting point as in Q1.3.</p>
-<p><strong>Answer:</strong> On my Apple Silicon MacBook Pro, I tested a Metal.jl-based GPU version. However, the GPU implementation was substantially slower than the CPU version. This likely reflects overhead from the Metal backend and the relatively small matrix sizes in this problem, for which GPU acceleration is not advantageous.</p>
+<p><strong>Answer:</strong> On my Apple Silicon MacBook Pro, I tested a Metal.jl-based GPU version. However, the GPU implementation was substantially slower than the CPU version. This likely reflects overhead from the Metal backend and the relatively small matrix sizes in this problem, for which GPU acceleration is not advantageous. Due to the very slow Metal.jl runtime, I only completed the benchmark for <span class="math inline">\(r=10\)</span> as a diagnostic.</p>
 <div id="cell-22" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">nnmf_GPU</span>(</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    X       <span class="op">::</span><span class="dt"> AbstractMatrix{T}</span>,</span>
@@ -2754,7 +2757,7 @@ Are the solutions the same? false</code></pre>
 <span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    VtX    <span class="op">=</span> Metal.<span class="fu">zeros</span>(<span class="dt">Float32</span>, r, <span class="fu">size</span>(X, <span class="fl">2</span>)) <span class="co"># for update W and obj</span></span>
 <span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    VtVW   <span class="op">=</span> Metal.<span class="fu">zeros</span>(<span class="dt">Float32</span>, r, <span class="fu">size</span>(X, <span class="fl">2</span>)) <span class="co"># for update W and obj</span></span>
 <span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># epsT = eps(T)</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    epsT <span class="op">=</span> <span class="fu">eps</span>(T)</span>
 <span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># obj at start point</span></span>
 <span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    normXsq <span class="op">=</span> <span class="fu">dot</span>(X, X)</span>
@@ -2771,21 +2774,21 @@ Are the solutions the same? false</code></pre>
 <span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(XWt, X, <span class="fu">transpose</span>(W))        <span class="co"># XW&#39;</span></span>
 <span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(temp, W, <span class="fu">transpose</span>(W))       <span class="co"># WW&#39;</span></span>
 <span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VWWt, V, temp)               <span class="co"># V(WW&#39;)</span></span>
-<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. V *= XWt / max(VWWt, epsT)</span></span>
-<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        @. V <span class="op">*=</span> XWt <span class="op">/</span> VWWt</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>        @. V <span class="op">*=</span> XWt <span class="op">/</span> <span class="fu">max</span>(VWWt, epsT)</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. V *= XWt / VWWt</span></span>
 <span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update W</span></span>
 <span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VtX, <span class="fu">transpose</span>(V), X)        <span class="co"># V&#39;X</span></span>
 <span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(temp, <span class="fu">transpose</span>(V), V)       <span class="co"># V&#39;V</span></span>
 <span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VtVW, temp, W)               <span class="co"># (V&#39;V)W</span></span>
-<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. W *= VtX / max(VtVW, epsT)</span></span>
-<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>        @. W <span class="op">*=</span> VtX <span class="op">/</span> VtVW</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>        @. W <span class="op">*=</span> VtX <span class="op">/</span> <span class="fu">max</span>(VtVW, epsT)</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>        <span class="co"># @. W *= VtX / VtVW</span></span>
 <span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># update obj</span></span>
 <span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>        <span class="fu">mul!</span>(VtVW, temp, W)</span>
 <span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>        obj_old <span class="op">=</span> obj</span>
-<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># obj = max(normXsq - 2 * dot(W, VtX) + dot(VtVW, W), zero(T))</span></span>
-<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>        obj <span class="op">=</span> normXsq <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu">dot</span>(W, VtX) <span class="op">+</span> <span class="fu">dot</span>(VtVW, W)</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>        obj <span class="op">=</span> <span class="fu">max</span>(normXsq <span class="op">-</span> <span class="fl">2</span> <span class="op">*</span> <span class="fu">dot</span>(W, VtX) <span class="op">+</span> <span class="fu">dot</span>(VtVW, W), <span class="fu">zero</span>(T))</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>        <span class="co"># obj = normXsq - 2 * dot(W, VtX) + dot(VtVW, W)</span></span>
 <span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="fu">abs</span>(obj <span class="op">-</span> obj_old) <span class="op">&lt;=</span> tolfun <span class="op">*</span> (<span class="fu">abs</span>(obj_old) <span class="op">+</span> <span class="fl">1</span>)</span>
 <span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>            niter <span class="op">=</span> iter</span>
@@ -2830,17 +2833,22 @@ Julia packages:
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> r <span class="kw">in</span> [<span class="fl">10</span>]</span>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">&quot;GPU r=</span><span class="sc">$</span>r<span class="st">&quot;</span>)</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    V0 <span class="op">=</span> <span class="fu">copy</span>(V0full_mtl[<span class="op">:</span>, <span class="fl">1</span><span class="op">:</span>r])</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    W0 <span class="op">=</span> <span class="fu">copy</span>(W0full_mtl[<span class="fl">1</span><span class="op">:</span>r, <span class="op">:</span>])</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>    _, _, obj, niter <span class="op">=</span> Metal.<span class="pp">@sync</span> <span class="fu">nnmf_GPU</span>(X_mtl, r, V <span class="op">=</span> <span class="fu">copy</span>(V0), W <span class="op">=</span> <span class="fu">copy</span>(W0))</span>
-<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@btime</span> Metal.<span class="pp">@sync</span> <span class="fu">nnmf_GPU</span>(<span class="op">$</span>X_mtl, <span class="op">$</span>r, V <span class="op">=</span> <span class="fu">copy</span>(<span class="op">$</span>V0), W <span class="op">=</span> <span class="fu">copy</span>(<span class="op">$</span>W0))</span>
-<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">&quot;obj=</span><span class="sc">$</span>obj<span class="st">, niter=</span><span class="sc">$</span>niter<span class="st">&quot;</span>)</span>
-<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    V0_mtl <span class="op">=</span> <span class="fu">copy</span>(V0full_mtl[<span class="op">:</span>, <span class="fl">1</span><span class="op">:</span>r])</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>    W0_mtl <span class="op">=</span> <span class="fu">copy</span>(W0full_mtl[<span class="fl">1</span><span class="op">:</span>r, <span class="op">:</span>])</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>    _, _, obj, niter <span class="op">=</span> Metal.<span class="pp">@sync</span> <span class="fu">nnmf_GPU</span>(X_mtl, r, V <span class="op">=</span> <span class="fu">copy</span>(V0_mtl), W <span class="op">=</span> <span class="fu">copy</span>(W0_mtl))</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    bench_f <span class="op">=</span> () <span class="op">-&gt;</span> Metal.<span class="pp">@sync</span> <span class="fu">nnmf_GPU</span>(X_mtl, r, V <span class="op">=</span> V0_mtl, W <span class="op">=</span> W0_mtl)</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>    <span class="pp">@btime</span> <span class="op">$</span><span class="fu">bench_f</span>() setup<span class="op">=</span>(</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>        <span class="fu">copyto!</span>(<span class="op">$</span>V0_mtl, <span class="op">$</span>V0full_mtl[<span class="op">:</span>, <span class="fl">1</span><span class="op">:$</span>r]),</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>        <span class="fu">copyto!</span>(<span class="op">$</span>W0_mtl, <span class="op">$</span>W0full_mtl[<span class="fl">1</span><span class="op">:$</span>r, <span class="op">:</span>])</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">println</span>(<span class="st">&quot;obj=</span><span class="sc">$</span>obj<span class="st">, niter=</span><span class="sc">$</span>niter<span class="st">&quot;</span>)</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="cf">end</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>GPU r=10
-  21.029 s (379555 allocations: 11.88 MiB)
+  21.773 s (379679 allocations: 11.92 MiB)
 obj=11730.375, niter=239</code></pre>
 </div>
 </div>
@@ -2851,7 +2859,7 @@ obj=11730.375, niter=239</code></pre>
 <p>Which AI assistants (e.g., GitHub Copilot) do you use when working on this assignment? Which AI model (e.g., GPT-5 mini, GPT-5, Claude Sonnet 4.5) does the AI assistant use? How do you use them? Do you think they help improve your productivity?</p>
 <p>Give 5 instances where AI model gave incorrect or misleading answers. You can use screenshots or copy-paste the Q&amp;A.</p>
 <p><strong>Answer:</strong></p>
-<p>For this assignment, I mainly used <strong>ChatGPT</strong> as an AI assistant. The model I used was <strong>GPT-5.4 Thinking</strong>. I used it mostly as a coding and debugging assistant while working on the Julia implementation of NNMF, benchmarking, image display, and the optional GPU exploration.</p>
+<p>For this assignment, I mainly used <strong>ChatGPT</strong> as an AI assistant. The model I used was <strong>GPT-5.5 Thinking</strong>. I used it mostly as a coding and debugging assistant while working on the Julia implementation of NNMF, benchmarking, image display, and the optional GPU exploration.</p>
 <p>I used the AI assistant in several ways. First, I used it to help me understand error messages in Julia, especially package-loading issues, benchmarking syntax, and variable-scope problems in <code>@btime</code>. Second, I used it to help revise and debug my <code>nnmf</code> implementation, including checking the multiplicative update formulas, objective function calculation, and convergence criterion. Third, I used it to improve code organization and write cleaner homework responses. I also used it to ask about the feasibility of GPU computation on my Apple Silicon MacBook Pro and the difference between CUDA and Metal backends.</p>
 <p>Overall, I think the AI assistant improved my productivity. It was especially helpful for quickly diagnosing coding mistakes and suggesting cleaner implementations. It also saved time when I needed help interpreting Julia errors or polishing write-up text. However, I found that AI-generated answers were not always correct, especially for technical details involving Julia benchmarking scope, GPU backends, and plotting behavior. Therefore, I still needed to verify the suggestions by running the code myself and checking the results carefully.</p>
 <section id="five-instances-where-the-ai-model-gave-incorrect-or-misleading-answers" class="level3" data-number="2.1">
