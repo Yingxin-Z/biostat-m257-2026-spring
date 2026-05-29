@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Yingxin Zhang 006140202">
-<meta name="dcterms.date" content="2026-05-24">
+<meta name="dcterms.date" content="2026-05-28">
 
 <title>Biostat/Biomath M257 Homework 6</title>
 <style>
@@ -2428,7 +2428,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">May 24, 2026</p>
+      <p class="date">May 28, 2026</p>
     </div>
   </div>
   
@@ -3508,7 +3508,7 @@ norm([lmm.∇β; vec(LowerTriangular(lmm.∇L)); lmm.∇σ²]) = 0.0974598226474
 <p>Try different solvers in the NLopt.jl and Ipopt.jl packages. Compare the results in terms of run times (the shorter the better), objective values at solution (the larger the better), and gradients at solution (closer to 0 the better). Summarize what you find.</p>
 <p>See this <a href="https://nlopt.readthedocs.io/en/latest/NLopt_Algorithms/">page</a> for the descriptions of algorithms in NLopt.</p>
 <p>Documentation for the Ipopt can be found <a href="https://coin-or.github.io/Ipopt/">here</a>.</p>
-<p><strong>Answer:</strong> LN_COBYLA (gradient-free) was the slowest (21s) and failed to converge within the iteration limit, leaving a large gradient norm of 2.17. This is expected: gradient-free methods require O(d²) function evaluations per step in a 12-dimensional space, making them impractical here. LD_MMA (gradient-based) converged quickly (0.05s) to a good objective value but with a moderate gradient norm (~0.097), as it stops on parameter change rather than stationarity. Ipopt L-BFGS achieved the tightest convergence (gradient norm ~1e-5) in 1.6s, benefiting from curvature information via L-BFGS and Ipopt’s rigorous KKT stopping criterion. For this problem, gradient-based methods are essential and Ipopt L-BFGS gives the best solution quality.</p>
+<p><strong>Answer:</strong> LN_COBYLA (gradient-free) was the slowest (21s) and failed to converge within the iteration limit, leaving a large gradient norm of 2.17. This is expected because gradient-free methods do not use derivative information and usually need many more objective evaluations, especially as the number of parameters increases. LD_MMA (gradient-based) converged quickly (0.05s) to a good objective value but with a moderate gradient norm (~0.097), as it stops on parameter change rather than stationarity. Ipopt L-BFGS achieved the tightest convergence (gradient norm ~1e-5) in 1.6s, benefiting from curvature information via L-BFGS and Ipopt’s rigorous KKT stopping criterion. For this problem, gradient-based methods are essential and Ipopt L-BFGS gives the best solution quality.</p>
 <div id="cell-59" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># vector of solvers to compare</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>solvers <span class="op">=</span> [<span class="st">&quot;NLopt (LN_COBYLA, gradient free)&quot;</span>, <span class="st">&quot;NLopt (LD_MMA, gradient-based)&quot;</span>, </span>
@@ -3637,7 +3637,7 @@ This program contains Ipopt, a library for large-scale nonlinear optimization.
 <section id="q9.-10-pts-compare-with-existing-art" class="level2" data-number="9">
 <h2 data-number="9" class="anchored" data-anchor-id="q9.-10-pts-compare-with-existing-art"><span class="header-section-number">9</span> Q9. (10 pts) Compare with existing art</h2>
 <p>Let’s compare our method with lme4 package in R and MixedModels.jl package in Julia. Both lme4 and MixedModels.jl are developed mainly by Doug Bates. Summarize what you find.</p>
-<p><strong>Answer:</strong> My NLP method (LD_MMA, 0.05s) achieves the same log-likelihood (-2,840,594.45) as lme4 (-2,840,594.45) and MixedModels.jl (-2,840,594.45), confirming correctness. Runtime-wise, my method is ~1647× faster than lme4 (82s) and ~14× faster than MixedModels.jl (0.71s). The speedup over lme4 comes from avoiding the REML-based EM algorithm and instead using gradient-based NLP with pre-computed sufficient statistics that eliminate O(n) work per gradient evaluation.</p>
+<p><strong>Answer:</strong> My NLP method achieves essentially the same maximized log-likelihood as lme4 and MixedModels.jl, confirming that the implementation is numerically consistent with established mixed-model software. In this experiment, my method is much faster because it uses precomputed sufficient statistics and optimizes over a small parameter vector directly. lme4 is much slower on this large long-format dataset, while MixedModels.jl is substantially faster than lme4 but still slower than my specialized implementation. Overall, the customized NLP approach is fastest for this fixed problem, while lme4 and MixedModels.jl are more general-purpose and robust.</p>
 <div id="cell-63" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode julia code-with-copy"><code class="sourceCode julia"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>method  <span class="op">=</span> [<span class="st">&quot;My method&quot;</span>, <span class="st">&quot;lme4&quot;</span>, <span class="st">&quot;MixedModels.jl&quot;</span>]</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>runtime <span class="op">=</span> <span class="fu">zeros</span>(<span class="fl">3</span>)  <span class="co"># record the run times</span></span>
